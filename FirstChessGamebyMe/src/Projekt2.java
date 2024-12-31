@@ -99,7 +99,68 @@ public class Projekt2 {
 			System.out.println("You can´t attak/move a free Field!");
 			return ChessField_current;
 		}
-		
+		//Rochade Schwarz
+				if (ChessField_current[from_X[0]][from_X[1]] == "SK") {
+				int YAchse = Math.abs(from_X[0] - to_Y[0]);
+				int XAchse = Math.abs(from_X[1] - to_Y[1]);
+				if (from_X[1] - to_Y[1] == -3 && ChessField_current[from_X[0]][from_X[1]] == "SK") {
+					int c = 0;
+					for(int i = 1;i < XAchse;i++) {
+						if (ChessField_current[from_X[0]][from_X[1] + i] != "XX") {
+							c++;
+						}}
+					if (c == 0 && ChessField_current[1][8] == "ST") {
+						ChessField_current[1][7] = "SK";
+						ChessField_current[1][6] = "ST";
+						ChessField_current[1][5] = "XX";
+						ChessField_current[1][8] = "XX";
+						return ChessField_current;
+					}}
+				if (from_X[1] - to_Y[1] == 2 && ChessField_current[from_X[0]][from_X[1]] == "SK") {
+					int c = 0;
+					for(int i = 1;i <= 3;i++) {
+						if (ChessField_current[from_X[0]][from_X[1] - i] != "XX") {
+							c++; 
+						}}
+					if (c == 0 && ChessField_current[1][8] == "ST") {
+						ChessField_current[1][3] = "SK";
+						ChessField_current[1][4] = "ST";
+						ChessField_current[1][1] = "XX";
+						ChessField_current[1][5] = "XX";
+						return ChessField_current;
+					}}
+				} // Rochade Weiß
+				if (ChessField_current[from_X[0]][from_X[1]] == "WK") {
+					int YAchse = Math.abs(from_X[0] - to_Y[0]);
+					int XAchse = Math.abs(from_X[1] - to_Y[1]);
+					
+					if (from_X[1] - to_Y[1] == -3 && ChessField_current[from_X[0]][from_X[1]] == "WK") {
+						int c = 0;
+						for(int i = 1;i < XAchse;i++) {
+							if (ChessField_current[from_X[0]][from_X[1] + i] != "XX") {
+								c++;
+							}}
+						if (c == 0 && ChessField_current[8][8] == "WT") {
+							ChessField_current[8][7] = "WK";
+							ChessField_current[8][6] = "WT";
+							ChessField_current[8][5] = "XX";
+							ChessField_current[8][8] = "XX";
+							return ChessField_current;
+						}}
+					if (from_X[1] - to_Y[1] == 2 && ChessField_current[from_X[0]][from_X[1]] == "WK") {
+						int c = 0;
+						for(int i = 1;i <= 3;i++) {
+							if (ChessField_current[from_X[0]][from_X[1] - i] != "XX") {
+								c++; 
+							}}
+						if (c == 0 && ChessField_current[8][8] == "WT") {
+							ChessField_current[8][3] = "WK";
+							ChessField_current[8][4] = "WT";
+							ChessField_current[8][1] = "XX";
+							ChessField_current[8][5] = "XX";
+							return ChessField_current;
+						}}
+					}
 		for (int i = 0; i < 2;i++) { //Check for Field between 1-8
 			if (from_X[i] >= 9 || from_X[i] <= 0) {
 				System.out.println("Invalid Field, Choose a Field between 1-8!");
