@@ -4,7 +4,7 @@ public class Projekt2 {
 
 	public static void main(String[] args) {
 
-		String[][] ChessField_First = { 
+		String[][] newField = { 
 				{ "XX", "01", "02", "03", "04", "05", "06", "07", "08", "XX" },
 				{ "01", "ST", "SS", "SL", "SQ", "SK", "SL", "SS", "ST", "01" },
 				{ "02", "SB", "SB", "SB", "SB", "SB", "SB", "SB", "SB", "02" },
@@ -13,46 +13,37 @@ public class Projekt2 {
 				{ "05", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "05" },
 				{ "06", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "06" },
 				{ "07", "WB", "WB", "WB", "WB", "WB", "WB", "WB", "WB", "07" },
-				{ "08", "WT", "WS", "WL", "WK", "WQ", "WL", "WS", "WT", "08" },
+				{ "08", "WT", "WS", "WL", "WQ", "WK", "WL", "WS", "WT", "08" },
 				{ "XX", "01", "02", "03", "04", "05", "06", "07", "08", "XX" }, };
-		int[] from_X = new int[2];
-		int[] to_Y = new int [2];
-		System.out.println("Funktionsweise: Man gibt zuerst die Koordinaten von der zu bewegenden Figur ein, erst in der Vertikalen dannach die Horizontale.!");
-		System.out.println("Dannach dann die Koordinaten des Ziel-Feldes im selben Format!");
-		for (int i = 0; i < 2;i++) {
-			System.out.println("Gib Koordinate von from_X " + i + " an!");
-			Scanner Eingabe_from_X = new Scanner(System.in);
-			from_X[i] = Eingabe_from_X.nextInt();
-		}
-		for (int i = 0; i < 2;i++) {
-			System.out.println("Gib Koordinate von to_Y " + i + "an!");
-			Scanner Eingabe_to_Y = new Scanner(System.in);
-			to_Y[i] = Eingabe_to_Y.nextInt();
-		}
-		
-		String[][] newField = ChessField_Move(ChessField_First, from_X, to_Y);
-		for (int c = 0; c < 150; c++) {
-			if (c >= 1) {
+		System.out.println("Funktionsweise: Man gibt zuerst die Koordinaten von der zu bewegenden Figur ein, erst in der Vertikalen dannach die Horizontale!");
+		System.out.println("Dannach die Koordinaten des Ziel-Feldes im selben Format!");
+		for (int c = 0; c < 300; c++) {
 			int[] newfrom_X = new int [2];
 			int[] newto_Y = new int [2];
+			System.out.println();
+			if ( c % 2 == 0) {
+				System.out.println("It´s White Players Turn!");
+			}
+			if ( c % 2 == 1) {
+				System.out.println("It´s Black Players Turn!");
+			}
 			for (int i = 0; i < 2;i++) {
-				System.out.println(newfrom_X[i]);
 				System.out.println("Gib Koordinate von from_X " + i + " an!");
 				Scanner Eingabe_from_X = new Scanner(System.in);
 				newfrom_X[i] = Eingabe_from_X.nextInt();
 			}
 			for (int i = 0; i < 2;i++) {
-				System.out.println(newto_Y[i]);
 				System.out.println("Gib Koordinate von to_Y " + i + "an!");
 				Scanner Eingabe_to_Y = new Scanner(System.in);
 				newto_Y[i] = Eingabe_to_Y.nextInt();
 			}
-				newField = ChessField_Move(newField, newfrom_X, newto_Y);
+				Object[] result = ChessField_Move(newField, newfrom_X, newto_Y, c);
+				newField = (String[][]) result[0];
+				int newZugstatus = (int) result[1];
 				for (int i= 0; i < 2;i++) {
 					newfrom_X[i] = 0;
-					to_Y[i] = 0;
+					newto_Y[i] = 0;
 				}
-			}
 			for (int k = 0;k <= newField.length ;k++) {
 				if (k < newField.length - 1) {
 				System.out.print("—————");
@@ -88,79 +79,33 @@ public class Projekt2 {
 					System.out.print("————");
 				}
 			}
+			if (newZugstatus == 1) {
+				c--;
+			}
+			newZugstatus = 0;
 		}
-	}
-
-	public static String[][] ChessField_Move(String[][] ChessField_current, int[] from_X, int[] to_Y) {
+	}	
+	public static Object[] ChessField_Move(String[][] ChessField_current, int[] from_X, int[] to_Y, int ws) {
 		String MyFigure = ChessField_current[from_X[0]][from_X[1]];
 		String NewPosMyFigure = ChessField_current[to_Y[0]][to_Y[1]];
-		
-		if (ChessField_current[from_X[0]][from_X[1]].equals("XX")) { // Check for selected free Field
-			System.out.println("You can´t attak/move a free Field!");
-			return ChessField_current;
+		int Zugreset = 0;
+		if (ws % 2 == 0 && MyFigure.charAt(0) != 'W') {
+			System.out.println("It´s white players turn!");
+			Zugreset++;
+			return new Object[] {ChessField_current, Zugreset};
 		}
-		//Rochade Schwarz
-				if (ChessField_current[from_X[0]][from_X[1]] == "SK") {
-				int YAchse = Math.abs(from_X[0] - to_Y[0]);
-				int XAchse = Math.abs(from_X[1] - to_Y[1]);
-				if (from_X[1] - to_Y[1] == -3 && ChessField_current[from_X[0]][from_X[1]] == "SK") {
-					int c = 0;
-					for(int i = 1;i < XAchse;i++) {
-						if (ChessField_current[from_X[0]][from_X[1] + i] != "XX") {
-							c++;
-						}}
-					if (c == 0 && ChessField_current[1][8] == "ST") {
-						ChessField_current[1][7] = "SK";
-						ChessField_current[1][6] = "ST";
-						ChessField_current[1][5] = "XX";
-						ChessField_current[1][8] = "XX";
-						return ChessField_current;
-					}}
-				if (from_X[1] - to_Y[1] == 2 && ChessField_current[from_X[0]][from_X[1]] == "SK") {
-					int c = 0;
-					for(int i = 1;i <= 3;i++) {
-						if (ChessField_current[from_X[0]][from_X[1] - i] != "XX") {
-							c++; 
-						}}
-					if (c == 0 && ChessField_current[1][8] == "ST") {
-						ChessField_current[1][3] = "SK";
-						ChessField_current[1][4] = "ST";
-						ChessField_current[1][1] = "XX";
-						ChessField_current[1][5] = "XX";
-						return ChessField_current;
-					}}
-				} // Rochade Weiß
-				if (ChessField_current[from_X[0]][from_X[1]] == "WK") {
-					int YAchse = Math.abs(from_X[0] - to_Y[0]);
-					int XAchse = Math.abs(from_X[1] - to_Y[1]);
-					
-					if (from_X[1] - to_Y[1] == -3 && ChessField_current[from_X[0]][from_X[1]] == "WK") {
-						int c = 0;
-						for(int i = 1;i < XAchse;i++) {
-							if (ChessField_current[from_X[0]][from_X[1] + i] != "XX") {
-								c++;
-							}}
-						if (c == 0 && ChessField_current[8][8] == "WT") {
-							ChessField_current[8][7] = "WK";
-							ChessField_current[8][6] = "WT";
-							ChessField_current[8][5] = "XX";
-							ChessField_current[8][8] = "XX";
-							return ChessField_current;
-						}}
-					if (from_X[1] - to_Y[1] == 2 && ChessField_current[from_X[0]][from_X[1]] == "WK") {
-						int c = 0;
-						for(int i = 1;i <= 3;i++) {
-							if (ChessField_current[from_X[0]][from_X[1] - i] != "XX") {
-								c++; 
-							}}
-						if (c == 0 && ChessField_current[8][8] == "WT") {
-							ChessField_current[8][3] = "WK";
-							ChessField_current[8][4] = "WT";
-							ChessField_current[8][1] = "XX";
-							ChessField_current[8][5] = "XX";
-							return ChessField_current;
-						}}
-					}
+		if (ws % 2 == 1 && MyFigure.charAt(0) != 'S') {
+			System.out.println("It´s Black players turn!");
+			Zugreset++;
+			return new Object[] {ChessField_current, Zugreset};
+		}
+		
+		if (ChessField_current[from_X[0]][from_X[1]].equals("XX")) {
+			System.out.println("You can´t attak/move a free Field!");
+			Zugreset++;
+			return new Object[] {ChessField_current, Zugreset};
+		}
+		
 		for (int i = 0; i < 2;i++) { //Check for Field between 1-8
 			if (from_X[i] >= 9 || from_X[i] <= 0) {
 				System.out.println("Invalid Field, Choose a Field between 1-8!");
@@ -171,10 +116,73 @@ public class Projekt2 {
 				return ChessField_current;
 			}
 		}
+		//Rochade Schwarz
+		if (ChessField_current[from_X[0]][from_X[1]] == "SK") {
+		int YAchse = Math.abs(from_X[0] - to_Y[0]);
+		int XAchse = Math.abs(from_X[1] - to_Y[1]);
+		if (from_X[1] - to_Y[1] == -3 && ChessField_current[from_X[0]][from_X[1]] == "SK") {
+			int c = 0;
+			for(int i = 1;i < XAchse;i++) {
+				if (ChessField_current[from_X[0]][from_X[1] + i] != "XX") {
+					c++;
+				}}
+			if (c == 0 && ChessField_current[1][8] == "ST") {
+				ChessField_current[1][7] = "SK";
+				ChessField_current[1][6] = "ST";
+				ChessField_current[1][5] = "XX";
+				ChessField_current[1][8] = "XX";
+				return new Object[] {ChessField_current, Zugreset};
+			}}
+		if (from_X[1] - to_Y[1] == 2 && ChessField_current[from_X[0]][from_X[1]] == "SK") {
+			int c = 0;
+			for(int i = 1;i <= 3;i++) {
+				if (ChessField_current[from_X[0]][from_X[1] - i] != "XX") {
+					c++; 
+				}}
+			if (c == 0 && ChessField_current[1][8] == "ST") {
+				ChessField_current[1][3] = "SK";
+				ChessField_current[1][4] = "ST";
+				ChessField_current[1][1] = "XX";
+				ChessField_current[1][5] = "XX";
+				return new Object[] {ChessField_current, Zugreset};
+			}}
+		} // Rochade Weiß
+		if (ChessField_current[from_X[0]][from_X[1]] == "WK") {
+			int YAchse = Math.abs(from_X[0] - to_Y[0]);
+			int XAchse = Math.abs(from_X[1] - to_Y[1]);
+			
+			if (from_X[1] - to_Y[1] == -3 && ChessField_current[from_X[0]][from_X[1]] == "WK") {
+				int c = 0;
+				for(int i = 1;i < XAchse;i++) {
+					if (ChessField_current[from_X[0]][from_X[1] + i] != "XX") {
+						c++;
+					}}
+				if (c == 0 && ChessField_current[8][8] == "WT") {
+					ChessField_current[8][7] = "WK";
+					ChessField_current[8][6] = "WT";
+					ChessField_current[8][5] = "XX";
+					ChessField_current[8][8] = "XX";
+					return new Object[] {ChessField_current, Zugreset};
+				}}
+			if (from_X[1] - to_Y[1] == 2 && ChessField_current[from_X[0]][from_X[1]] == "WK") {
+				int c = 0;
+				for(int i = 1;i <= 3;i++) {
+					if (ChessField_current[from_X[0]][from_X[1] - i] != "XX") {
+						c++; 
+					}}
+				if (c == 0 && ChessField_current[8][8] == "WT") {
+					ChessField_current[8][3] = "WK";
+					ChessField_current[8][4] = "WT";
+					ChessField_current[8][1] = "XX";
+					ChessField_current[8][5] = "XX";
+					return new Object[] {ChessField_current, Zugreset};
+				}}
+			}
 		// OWN FIGURE ATTACK BLOCK
 		if (MyFigure.charAt(0) == NewPosMyFigure.charAt(0)) {
 			System.out.println("You can´t attack your own Figure!");
-			return ChessField_current;
+			Zugreset++;
+			return new Object[] {ChessField_current, Zugreset};
 		}
 		String[][] ChessField_current_lokal = new String[ChessField_current.length][ChessField_current[0].length];
 		String Field_clear = "XX";
@@ -196,7 +204,7 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				}
 				if (from_X[0] - to_Y[0] == 1 || from_X[0] - to_Y[0] == -1) {
 					for (int i = 0; i < ChessField_current_lokal.length; i++) {
@@ -211,7 +219,8 @@ public class Projekt2 {
 						}
 					}
 				} else {
-					return ChessField_current;
+					Zugreset++;
+					return new Object[] {ChessField_current, Zugreset};
 				}
 			}
 			if (ChessField_current[to_Y[0]][to_Y[1]] != "XX") {
@@ -272,7 +281,7 @@ public class Projekt2 {
 					}	
 				}
 			}
-			return ChessField_current_lokal;
+			return new Object[] {ChessField_current_lokal, Zugreset};
 		}
 
 		// TOWER MOVEMENT AND ATTACK
@@ -291,7 +300,8 @@ public class Projekt2 {
 					}
 					if (0 < c) {
 						System.out.println("not possible1");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					} else {
 						for (int i = 0; i < ChessField_current_lokal.length; i++) {
 							for (int j = 0; j < ChessField_current_lokal[0].length; j++) {
@@ -317,7 +327,8 @@ public class Projekt2 {
 					}
 					if (0 < c) {
 						System.out.println("not possible3");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					} else {
 						for (int i = 0; i < ChessField_current_lokal.length; i++) {
 
@@ -347,7 +358,8 @@ public class Projekt2 {
 					}
 					if (0 < c) {
 						System.out.println("Not possible2");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					} else {
 						for (int i = 0; i < ChessField_current_lokal.length; i++) {
 
@@ -374,7 +386,8 @@ public class Projekt2 {
 					}
 					if (0 < c) {
 						System.out.println("Not possible4");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					} else {
 						for (int i = 0; i < ChessField_current_lokal.length; i++) {
 
@@ -392,9 +405,10 @@ public class Projekt2 {
 				}
 			} else {
 				System.out.println("You can only move the Rook horizontally and vertically!");
-				return ChessField_current;
+				Zugreset++;
+				return new Object[] {ChessField_current, Zugreset};
 			}
-			return ChessField_current_lokal;
+			return new Object[] {ChessField_current_lokal, Zugreset};
 		}
 
 		// BISHOP MOVEMENT AND ATTACK
@@ -432,7 +446,8 @@ public class Projekt2 {
 					}
 					else {
 						System.out.println("You can´t jump Figures!");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					}
 				}
 				if (from_X[0] < to_Y[0] && from_X[1] > to_Y[1] ) { // Rechts nach Links, Oben nach unten
@@ -465,7 +480,8 @@ public class Projekt2 {
 					}
 					else {
 						System.out.println("You can´t jump Figures!");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					}
 				}
 				if (from_X[0] > to_Y[0] && from_X[1] < to_Y[1] ) { // Links nach Rechts, unten nach oben
@@ -498,7 +514,8 @@ public class Projekt2 {
 					}
 					else {
 						System.out.println("You can´t jump Figures!");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					}
 				}
 				if (from_X[0] > to_Y[0] && from_X[1] > to_Y[1] ) { // Rechts nach Links, unten nach oben
@@ -531,22 +548,25 @@ public class Projekt2 {
 					}
 					else {
 						System.out.println("You can´t jump Figures!");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					}
 				}
 			}
 				
 			else {
 				System.out.println("The bishop just can move diagonal!");
-				return ChessField_current;
+				Zugreset++;
+				return new Object[] {ChessField_current, Zugreset};
 			}
-			return ChessField_current_lokal;
+			return new Object[] {ChessField_current_lokal, Zugreset};
 		}
 
 		// KING MOVEMENT AND ATTACK
 		if (ChessField_current[from_X[0]][from_X[1]] == "SK" || ChessField_current[from_X[0]][from_X[1]] == "WK") {
 			int YAchse = Math.abs(from_X[0] - to_Y[0]);
 			int XAchse = Math.abs(from_X[1] - to_Y[1]);
+			
 			// Movement Corner
 			if (YAchse == 1 && XAchse == 1) {
 				if (from_X[0] - to_Y[0] == 1 && from_X[1] - to_Y[1] == 1) {
@@ -561,7 +581,7 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				}
 				if (from_X[0] - to_Y[0] == 1 && from_X[1] - to_Y[1] == -1) {
 					for (int i = 0; i < ChessField_current_lokal.length; i++) {
@@ -575,7 +595,7 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				}
 				if (from_X[0] - to_Y[0] == -1 && from_X[1] - to_Y[1] == 1) {
 					for (int i = 0; i < ChessField_current_lokal.length; i++) {
@@ -589,7 +609,7 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				}
 				if (from_X[0] - to_Y[0] == -1 && from_X[1] - to_Y[1] == -1) {
 					for (int i = 0; i < ChessField_current_lokal.length; i++) {
@@ -603,7 +623,7 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				}
 			}
 			// Movement upwards and downwards
@@ -620,7 +640,7 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				} else if (from_X[0] - to_Y[0] == -1) {
 					for (int i = 0; i < ChessField_current_lokal.length; i++) {
 						for (int j = 0; j < ChessField_current_lokal[0].length; j++) {
@@ -633,10 +653,11 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				} else {
 					System.out.println("Field not free!");
-					return ChessField_current;
+					Zugreset++;
+					return new Object[] {ChessField_current, Zugreset};
 				}
 			}	
 			// Movement to left and right
@@ -653,7 +674,7 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				}
 				if (from_X[1] - to_Y[1] == -1) {
 					for (int i = 0; i < ChessField_current_lokal.length; i++) {
@@ -667,20 +688,21 @@ public class Projekt2 {
 							}
 						}
 					}
-					return ChessField_current_lokal;
+					return new Object[] {ChessField_current_lokal, Zugreset};
 				}
 				else {
 					System.out.println("Field not free!");
-					return ChessField_current;
+					Zugreset++;
+					return new Object[] {ChessField_current, Zugreset};
 				}
 			}
 			
 			else {
 				System.out.println("Invalid Move, try again!");
-				return ChessField_current;
+				Zugreset++;
+				return new Object[] {ChessField_current, Zugreset};
 			}
 		}
-
 
 		// KNIGHT MOVEMENT AND ATTACK
 		if (ChessField_current[from_X[0]][from_X[1]] == "SS" || ChessField_current[from_X[0]][from_X[1]] == "WS") {
@@ -698,7 +720,7 @@ public class Projekt2 {
 						}
 					}
 				}
-				return ChessField_current_lokal;
+				return new Object[] {ChessField_current_lokal, Zugreset};
 			}
 		}
 
@@ -718,7 +740,8 @@ public class Projekt2 {
 					}
 					if (0 < c) {
 						System.out.println("not possible1");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					} else {
 						for (int i = 0; i < ChessField_current_lokal.length; i++) {
 
@@ -745,7 +768,8 @@ public class Projekt2 {
 					}
 					if (0 < c) {
 						System.out.println("not possible3");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					} else {
 						for (int i = 0; i < ChessField_current_lokal.length; i++) {
 
@@ -775,7 +799,8 @@ public class Projekt2 {
 					}
 					if (0 < c) {
 						System.out.println("Not possible2");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					} else {
 						for (int i = 0; i < ChessField_current_lokal.length; i++) {
 
@@ -802,7 +827,8 @@ public class Projekt2 {
 					}
 					if (0 < c) {
 						System.out.println("Not possible4");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					} else {
 						for (int i = 0; i < ChessField_current_lokal.length; i++) {
 
@@ -852,7 +878,8 @@ public class Projekt2 {
 					}
 					else {
 						System.out.println("You can´t jump Figures!");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					}
 				}
 				if (from_X[0] < to_Y[0] && from_X[1] > to_Y[1] ) { // Rechts nach Links, Oben nach unten
@@ -885,7 +912,8 @@ public class Projekt2 {
 					}
 					else {
 						System.out.println("You can´t jump Figures!");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					}
 				}
 				if (from_X[0] > to_Y[0] && from_X[1] < to_Y[1] ) { // Links nach Rechts, unten nach oben
@@ -918,7 +946,8 @@ public class Projekt2 {
 					}
 					else {
 						System.out.println("You can´t jump Figures!");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					}
 				}
 				if (from_X[0] > to_Y[0] && from_X[1] > to_Y[1] ) { // Rechts nach Links, unten nach oben
@@ -951,15 +980,17 @@ public class Projekt2 {
 					}
 					else {
 						System.out.println("You can´t jump Figures!");
-						return ChessField_current;
+						Zugreset++;
+						return new Object[] {ChessField_current, Zugreset};
 					}
 				}
 			}
-			return ChessField_current_lokal;
+			return new Object[] {ChessField_current_lokal, Zugreset};
 		}
 
 		System.out.println("That was no valid move, try again!");
-		return ChessField_current;
+		Zugreset++;
+		return new Object[] {ChessField_current, Zugreset};
 	}
 
 }
