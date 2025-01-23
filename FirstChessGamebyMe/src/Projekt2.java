@@ -3,16 +3,15 @@ import java.util.Scanner;
 public class Projekt2 {
 
 	public static void main(String[] args) {
-
 		String[][] newField = { 
 				{ "XX", "01", "02", "03", "04", "05", "06", "07", "08", "XX" },
 				{ "01", "ST", "SS", "SL", "SQ", "SK", "SL", "SS", "ST", "01" },
-				{ "02", "SB", "SB", "SB", "SB", "SB", "SB", "SB", "SB", "02" },
+				{ "02", "SB", "SB", "SB", "SB", "WB", "SB", "SB", "SB", "02" },
 				{ "03", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "03" },
 				{ "04", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "04" },
 				{ "05", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "05" },
 				{ "06", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "XX", "06" },
-				{ "07", "WB", "WB", "WB", "WB", "WB", "WB", "WB", "WB", "07" },
+				{ "07", "WB", "WB", "WB", "SB", "WB", "WB", "WB", "WB", "07" },
 				{ "08", "WT", "WS", "WL", "WQ", "WK", "WL", "WS", "WT", "08" },
 				{ "XX", "01", "02", "03", "04", "05", "06", "07", "08", "XX" }, };
 		System.out.println("Funktionsweise: Man gibt zuerst die Koordinaten von der zu bewegenden Figur ein, erst in der Vertikalen dannach die Horizontale!");
@@ -99,13 +98,11 @@ public class Projekt2 {
 			Zugreset++;
 			return new Object[] {ChessField_current, Zugreset};
 		}
-		
 		if (ChessField_current[from_X[0]][from_X[1]].equals("XX")) {
 			System.out.println("You can´t attak/move a free Field!");
 			Zugreset++;
 			return new Object[] {ChessField_current, Zugreset};
 		}
-		
 		for (int i = 0; i < 2;i++) { //Check for Field between 1-8
 			if (from_X[i] >= 9 || from_X[i] <= 0) {
 				System.out.println("Invalid Field, Choose a Field between 1-8!");
@@ -150,7 +147,6 @@ public class Projekt2 {
 		if (ChessField_current[from_X[0]][from_X[1]] == "WK") {
 			int YAchse = Math.abs(from_X[0] - to_Y[0]);
 			int XAchse = Math.abs(from_X[1] - to_Y[1]);
-			
 			if (from_X[1] - to_Y[1] == -3 && ChessField_current[from_X[0]][from_X[1]] == "WK") {
 				int c = 0;
 				for(int i = 1;i < XAchse;i++) {
@@ -188,7 +184,7 @@ public class Projekt2 {
 		String Field_clear = "XX";
 		String Field_old = ChessField_current[from_X[0]][from_X[1]];
 		String Field_new = ChessField_current[to_Y[0]][to_Y[1]];
-		// PAWN MOVEMENT AND ATTACK // Double Move and Attack not coded yet.
+		// PAWN MOVEMENT AND ATTACK
 		if (ChessField_current[from_X[0]][from_X[1]] == "SB" || ChessField_current[from_X[0]][from_X[1]] == "WB") {
 			if (ChessField_current[to_Y[0]][to_Y[1]] == "XX") {
 				int Test = Math.abs(from_X[0] - to_Y[0]);
@@ -201,6 +197,52 @@ public class Projekt2 {
 								ChessField_current_lokal[i][j] = Field_old;
 							} else {
 								ChessField_current_lokal[i][j] = ChessField_current[i][j];
+							}
+						}
+					}
+					for (int i=0; i <= 8;i++) {
+						if(ChessField_current_lokal[1][i] == "WB") {
+							System.out.println("Choose the Figure you want to transfer your pawn into.");
+							System.out.println("Enter number 1= WQ, 2 = WT, 3 = WL, 4 = WP, 5 = WB.");
+							Scanner BauerTransfer = new Scanner(System.in);
+							int TransferFigure = BauerTransfer.nextInt();
+							if (TransferFigure == 1) {
+								ChessField_current_lokal[1][i] = "WQ";
+							}
+							if (TransferFigure == 2) {
+								ChessField_current_lokal[1][i] = "WT";
+							}
+							if (TransferFigure == 3) {
+								ChessField_current_lokal[1][i] = "WL";
+							}
+							if (TransferFigure == 4) {
+								ChessField_current_lokal[1][i] = "WP";
+							}
+							if (TransferFigure == 5) {
+								ChessField_current_lokal[1][i] = "WB";
+							}
+						}
+					}
+					for (int i=0; i <= 8;i++) {
+						if(ChessField_current_lokal[8][i] == "SB") {
+							System.out.println("Choose the Figure you want to transfer your pawn into.");
+							System.out.println("Enter number 1= SQ, 2 = ST, 3 = SL, 4 = SP, 5 = SB.");
+							Scanner BauerTransfer = new Scanner(System.in);
+							int TransferFigure = BauerTransfer.nextInt();
+							if (TransferFigure == 1) {
+								ChessField_current_lokal[8][i] = "SQ";
+							}
+							if (TransferFigure == 2) {
+								ChessField_current_lokal[8][i] = "ST";
+							}
+							if (TransferFigure == 3) {
+								ChessField_current_lokal[8][i] = "SL";
+							}
+							if (TransferFigure == 4) {
+								ChessField_current_lokal[8][i] = "SP";
+							}
+							if (TransferFigure == 5) {
+								ChessField_current_lokal[8][i] = "SB";
 							}
 						}
 					}
@@ -280,6 +322,58 @@ public class Projekt2 {
 						}
 					}	
 				}
+			}
+			for (int i=1; i <= 8;i++) {
+				if(ChessField_current_lokal[1][i] == "WB") {
+					System.out.println("Choose the Figure you want to transfer your pawn into.");
+					System.out.println("Enter number 1 = WQ, 2 = WT, 3 = WL, 4 = WP, 5 = WB.");
+					Scanner BauerTransfer = new Scanner(System.in);
+					int TransferFigure = BauerTransfer.nextInt();
+					if (TransferFigure == 1) {
+						ChessField_current_lokal[1][i] = "WQ";
+					}
+					if (TransferFigure == 2) {
+						ChessField_current_lokal[1][i] = "WT";
+					}
+					if (TransferFigure == 3) {
+						ChessField_current_lokal[1][i] = "WL";
+					}
+					if (TransferFigure == 4) {
+						ChessField_current_lokal[1][i] = "WP";
+					}
+					if (TransferFigure == 5) {
+						ChessField_current_lokal[1][i] = "WB";
+					}
+				}
+			}
+			for (int i=1; i <= 8;i++) {
+				if(ChessField_current_lokal[8][i] == "SB") {
+					System.out.println("Choose the Figure you want to transfer your pawn into.");
+					System.out.println("Enter number 1= SQ, 2 = ST, 3 = SL, 4 = SP, 5 = SB.");
+					Scanner BauerTransfer = new Scanner(System.in);
+					int TransferFigure = BauerTransfer.nextInt();
+					if (TransferFigure == 1) {
+						ChessField_current_lokal[8][i] = "SQ";
+					}
+					if (TransferFigure == 2) {
+						ChessField_current_lokal[8][i] = "ST";
+					}
+					if (TransferFigure == 3) {
+						ChessField_current_lokal[8][i] = "SL";
+					}
+					if (TransferFigure == 4) {
+						ChessField_current_lokal[8][i] = "SP";
+					}
+					if (TransferFigure == 5) {
+						ChessField_current_lokal[8][i] = "SB";
+					}
+				}
+			}
+
+			if (ChessField_current[to_Y[0]][to_Y[1]] != "XX" && from_X[1] == to_Y[1]) {
+				System.out.println("Invalid Move, try again!");
+				Zugreset++;
+				return new Object[] {ChessField_current, Zugreset};			
 			}
 			return new Object[] {ChessField_current_lokal, Zugreset};
 		}
